@@ -1,8 +1,12 @@
 plugins {
     id "com.android.application"
+    // START: FlutterFire Configuration
+    id 'com.google.gms.google-services'
+    // END: FlutterFire Configuration
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
+    //  id 'org.jetbrains.kotlin.android' version '1.8.22'
 }
 
 def localProperties = new Properties()
@@ -38,10 +42,11 @@ android {
         applicationId = "com.example.whatsapp_ui"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdk = flutter.minSdkVersion
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -52,7 +57,25 @@ android {
         }
     }
 }
+// dont remove this duplicate error solve by this
+configurations.all {
+    resolutionStrategy {
+        eachDependency {
+            if ((requested.group == "org.jetbrains.kotlin") && (requested.name.startsWith("kotlin-stdlib"))) {
+                useVersion("1.8.0")
+            }
+        }
+    }
+}
+
 
 flutter {
     source = "../.."
+}
+dependencies {
+  // Import the BoM for the Firebase platform
+  implementation platform('com.google.firebase:firebase-bom:33.1.2')
+
+  // Declare the dependencies for the desired Firebase products without specifying versions
+  
 }
