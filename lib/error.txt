@@ -1,0 +1,4 @@
+on clicking the select contact it is not going to chat_screen because
+sol- first save the collection with same name and no starting with +91
+the no you add manually should match the firebase_storage collection
+the manually configured contact account and app account must be same and sync properly

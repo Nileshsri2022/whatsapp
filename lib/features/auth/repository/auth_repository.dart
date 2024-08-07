@@ -23,14 +23,23 @@ class AuthRepository {
   final FirebaseFirestore firestore;
 
   AuthRepository({required this.auth, required this.firestore});
+  Future<UserModel?> getCurrentUserData() async {
+    var userData =
+        await firestore.collection('users').doc(auth.currentUser?.uid).get();
+    UserModel? user;
+    if (userData.data() != null) {
+      user = UserModel.fromMap(userData.data()!);
+    }
+    return user;
+  }
 
   void signInWithPhone(BuildContext context, String phoneNumber) async {
     print('inside signInWithPhone' + phoneNumber);
 
     try {
       await auth.verifyPhoneNumber(
-        // this missing
-        phoneNumber: phoneNumber,
+          // this missing
+          phoneNumber: phoneNumber,
           verificationCompleted: (PhoneAuthCredential credential) async {
             print("verificationCompleted");
             print(credential);
@@ -94,7 +103,7 @@ class AuthRepository {
           uid: uid,
           profilePic: photoUrl,
           isOnline: true,
-          phoneNumber: auth.currentUser!.uid,
+          phoneNumber: auth.currentUser!.phoneNumber!,
           groupId: []);
       //create if not exist or modify collection users and go to doc uid and set the prop of user with given
       await firestore.collection('users').doc(uid).set(user.toMap());
@@ -105,5 +114,12 @@ class AuthRepository {
     } catch (e) {
       showSnackBar(context: context, content: e.toString());
     }
+  }
+  // here we use Stream and not Future
+  // 1.
+  Stream<UserModel>userData(String userId) {
+    return firestore.collection('users').doc(userId).snapshots().map(
+          (event) => UserModel.fromMap(event.data()!),
+        );
   }
 }

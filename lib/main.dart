@@ -2,6 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/colors.dart';
+import 'package:whatsapp_ui/common/widgets/error.dart';
+import 'package:whatsapp_ui/common/widgets/loader.dart';
+import 'package:whatsapp_ui/features/auth/controller/auth_controller.dart';
 import 'package:whatsapp_ui/features/auth/screens/user_information_screen.dart';
 import 'package:whatsapp_ui/features/landing/screens/landing_screen.dart';
 import 'package:whatsapp_ui/firebase_options.dart';
@@ -11,37 +14,45 @@ import 'package:whatsapp_ui/screens/mobile_layout_screen.dart';
 import 'package:whatsapp_ui/utils/responsive_layout.dart';
 
 void main() async {
-  try{
+  try {
     WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  }
-  catch(err){
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (err) {
     print("error in initializing");
   }
   // to keep track and save all provider state
-  runApp(ProviderScope(child:MyApp()));
+  runApp(ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       title: 'Whatsapp ui',
       debugShowCheckedModeBanner: false,
-      theme:
-          ThemeData.dark().copyWith(
-            scaffoldBackgroundColor: backgroundColor,
-            // this appBar theme is followed for every screen unless you change
-          appBarTheme: const AppBarTheme(
-            color: appBarColor
-          )
-          ),
-      onGenerateRoute: (settings)=>generateRoute(settings),
-      home: const LandingScreen()
+      theme: ThemeData.dark().copyWith(
+          scaffoldBackgroundColor: backgroundColor,
+          // this appBar theme is followed for every screen unless you change
+          appBarTheme: const AppBarTheme(color: appBarColor)),
+      onGenerateRoute: (settings) => generateRoute(settings),
+      // ref.read wont work only one time thing
+      // In BuildContext it is neccessary to use ref.watch to continously watch
+      home: ref.watch(userDataAuthProvider).when(
+          data: (user) {
+            if (user == null) {
+              return const LandingScreen();
+            }
+            return const MobileLayoutScreen();
+          },
+          error: (err, trace) {
+            return ErrorScreen(error: err.toString());
+          },
+          loading: ()=>const Loader()),
     );
   }
 }
+// if you use Future<builder> then we have to handle all the error and loading process connection.waiting and all four states

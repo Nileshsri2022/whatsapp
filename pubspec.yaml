@@ -41,7 +41,10 @@ dependencies:
   cloud_firestore: ^5.1.0
   flutter_riverpod:
   firebase_storage:
-  image_picker: 
+  image_picker:
+  flutter_contacts:
+  uuid: ^4.4.2
+  
 
 
 dev_dependencies:

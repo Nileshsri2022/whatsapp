@@ -44,7 +44,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     // provider ref interact provider with provider
     // widget ref interact widget with provider
     if (country != null && phoneNumber.isNotEmpty) {
-      
+
       ref
           .read(authControllerProvider)
           .signInWithPhone(context, '+${country!.phoneCode}${phoneNumber}');
@@ -63,45 +63,47 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         // override the global appBarTheme
         backgroundColor: backgroundColor,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text('Whatsapp will need to verify your phone number'),
-            const SizedBox(
-              height: 10,
-            ),
-            // the reason we are not using custom button it uses ElevatedButton
-            TextButton(
-              onPressed: pickCountry,
-              child: Text('Pick Country'),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                if (country != null) Text('+${country!.phoneCode}'),
-                SizedBox(
-                  width: 10,
-                ),
-                SizedBox(
-                  width: size.width * 0.7,
-                  child: TextField(
-                      controller: phoneController,
-                      decoration: InputDecoration(hintText: 'phone number')),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: size.height * 0.56,
-            ),
-            SizedBox(
-              width: 90,
-              child: CustomButton(text: 'NEXT', onPressed: sendPhoneNumber),
-            )
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text('Whatsapp will need to verify your phone number'),
+              const SizedBox(
+                height: 10,
+              ),
+              // the reason we are not using custom button it uses ElevatedButton
+              TextButton(
+                onPressed: pickCountry,
+                child: Text('Pick Country'),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  if (country != null) Text('+${country!.phoneCode}'),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  SizedBox(
+                    width: size.width * 0.7,
+                    child: TextField(
+                        controller: phoneController,
+                        decoration: InputDecoration(hintText: 'phone number')),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: size.height * 0.56,
+              ),
+              SizedBox(
+                width: 90,
+                child: CustomButton(text: 'NEXT', onPressed: sendPhoneNumber),
+              )
+            ],
+          ),
         ),
       ),
     );
