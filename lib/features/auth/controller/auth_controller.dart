@@ -41,8 +41,13 @@ class AuthController {
     authRepository.saveUserDataToFirebase(
         name: name, profilePic: profilePic, ref: ref, context: context);
   }
+
   // 2.
-  Stream<UserModel> userDataById(String userId){
+  Stream<UserModel> userDataById(String userId) {
     return authRepository.userData(userId);
+  }
+
+  void setUserState(bool isOnline) {
+    authRepository.setUserState(isOnline);
   }
 }
