@@ -9,13 +9,58 @@ import 'package:whatsapp_ui/models/chat_contact.dart';
 import 'package:whatsapp_ui/models/message.dart';
 import 'package:whatsapp_ui/models/user_model.dart';
 
-final ChatRepositoryProvider = Provider((ref)=>ChatRepository(auth:FirebaseAuth.instance, firestore: FirebaseFirestore.instance));
+final ChatRepositoryProvider = Provider((ref) => ChatRepository(
+    auth: FirebaseAuth.instance, firestore: FirebaseFirestore.instance));
 
 class ChatRepository {
   final FirebaseFirestore firestore;
   final FirebaseAuth auth;
 
   ChatRepository({required this.auth, required this.firestore});
+  Stream<List<ChatContact>> getChatContact() {
+    return firestore
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .collection('chats')
+        .snapshots()
+        .asyncMap((event) async {
+      List<ChatContact> contacts = [];
+      for (var document in event.docs) {
+        var chatContact = ChatContact.fromMap(document.data());
+        var userData = await firestore
+            .collection('users')
+            .doc(chatContact.contactId)
+            .get();
+        var user = UserModel.fromMap(userData.data()!);
+        contacts.add(ChatContact(
+            name: user.name,
+            profilePic: user.profilePic,
+            contactId: chatContact.contactId,
+            timeSent: chatContact.timeSent,
+            lastMessage: chatContact.lastMessage));
+      }
+      return contacts;
+    });
+  }
+
+  Stream<List<Message>> getChatStream(String recieverUserId) {
+    return firestore
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .collection('chats')
+        .doc(recieverUserId)
+        .collection('messages')
+        .orderBy('timeSent')
+        .snapshots()
+        .map((event) {
+      List<Message> messages = [];
+      for (var document in event.docs) {
+        messages.add(Message.fromMap(document.data()));
+      }
+      return messages;
+    });
+  }
+
   void _saveDataToContactsSubCollection(
       UserModel senderUserData,
       UserModel recieverUserData,
