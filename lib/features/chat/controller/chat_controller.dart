@@ -68,3 +68,5 @@ class ChatController {
         );
   }
 }
+
+// agora depends on permission handler 9.2.0
