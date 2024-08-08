@@ -37,9 +37,8 @@ class ChatController {
             recieverUserId: recieverUserId,
             senderUser: value!));
   }
-  void sendFileMessage(
-      BuildContext context,
-      File file, String recieverUserId,
+
+  void sendFileMessage(BuildContext context, File file, String recieverUserId,
       MessageEnum messageEnum) {
     ref.read(userDataAuthProvider).whenData((value) =>
         chatRepository.sendFileMesssage(
@@ -51,4 +50,21 @@ class ChatController {
             ref: ref));
   }
 
+  void sendGIFMessage(
+      BuildContext context, String gifUrl, String recieverUserId) {
+    //this wont work
+    //https://giphy.com/gifs/storyful-kamala-harris-via-storyful-you-see-what-i-did-there-NyrK2t2T1Ff4r14BC6.gif
+    //store as below
+    //https://i.giphy.com/media/NyrK2t2T1Ff4r14BC6/200.gif
+    int gifUrlPartIndex = gifUrl.lastIndexOf('-') + 1;
+    String gifUrlPart = gifUrl.substring(gifUrlPartIndex);
+    String newgifUrl = 'https://i.giphy.com/media/$gifUrlPart/200.gif';
+    ref.read(userDataAuthProvider).whenData(
+          (value) => chatRepository.sendGIFMessage(
+              context: context,
+              gifUrl: newgifUrl,
+              recieverUserId: recieverUserId,
+              senderUser: value!),
+        );
+  }
 }
