@@ -29,9 +29,9 @@ class _ChatListState extends ConsumerState<ChatList> {
     super.dispose();
   }
 
-  void onMessageSwipe(String message,
-  bool isMe,MessageEnum messageEnum) {
-    ref.read(messageReplyProvider.notifier).update((state) => MessageReply(message: message,isMe:isMe,messageEnum: messageEnum));
+  void onMessageSwipe(String message, bool isMe, MessageEnum messageEnum) {
+    ref.read(messageReplyProvider.notifier).update((state) =>
+        MessageReply(message: message, isMe: isMe, messageEnum: messageEnum));
   }
 
   @override
@@ -53,6 +53,13 @@ class _ChatListState extends ConsumerState<ChatList> {
             itemBuilder: (context, index) {
               final messageData = snapshot.data![index];
               var timeSent = DateFormat.Hm().format(messageData.timeSent);
+              // if message is not seen and id is us then update to seen
+              if (!messageData.isSeen &&
+                  messageData.recieverid ==
+                      FirebaseAuth.instance.currentUser!.uid) {
+                ref.read(ChatControllerProvider).setChatMessageSeen(
+                    context, widget.recieverUserId, messageData.messageId);
+              }
               if (messageData.senderId ==
                   FirebaseAuth.instance.currentUser!.uid) {
                 return MyMessageCard(
@@ -62,7 +69,9 @@ class _ChatListState extends ConsumerState<ChatList> {
                   repliedText: messageData.repliedMessage,
                   username: messageData.repliedTo,
                   repliedMessageType: messageData.repliedMessageType,
-                  onLeftSwipe: ()=>onMessageSwipe(messageData.text,true,messageData.type),
+                  onLeftSwipe: () =>
+                      onMessageSwipe(messageData.text, true, messageData.type),
+                      isSeen:messageData.isSeen
                 );
               }
               return SenderMessageCard(
@@ -70,12 +79,13 @@ class _ChatListState extends ConsumerState<ChatList> {
                 date: timeSent,
                 type: messageData.type,
                 username: messageData.repliedTo,
-                  repliedMessageType: messageData.repliedMessageType,
-                  onRightSwipe: ()=>onMessageSwipe(messageData.text,false,messageData.type,
-                  ),
-                  repliedText: messageData.repliedMessage,
-
-
+                repliedMessageType: messageData.repliedMessageType,
+                onRightSwipe: () => onMessageSwipe(
+                  messageData.text,
+                  false,
+                  messageData.type,
+                ),
+                repliedText: messageData.repliedMessage,
               );
             },
           );

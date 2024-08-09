@@ -13,6 +13,7 @@ class MyMessageCard extends StatelessWidget {
   final String repliedText;
   final String username;
   final MessageEnum repliedMessageType;
+  final bool isSeen;
 
   const MyMessageCard(
       {Key? key,
@@ -22,7 +23,7 @@ class MyMessageCard extends StatelessWidget {
       required this.onLeftSwipe,
       required this.repliedText,
       required this.repliedMessageType,
-      required this.username})
+      required this.username, required this.isSeen})
       : super(key: key);
 
   @override
@@ -57,29 +58,33 @@ class MyMessageCard extends StatelessWidget {
                   child: Column(
                     children: [
                       //if collection will allow only one widget and with ... allow multiple widget
-                      if(isReplying)...[
-                        Text(username,style: TextStyle(fontWeight: FontWeight.bold),
+                      if (isReplying) ...[
+                        Text(
+                          username,
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 3,),
+                        SizedBox(
+                          height: 3,
+                        ),
                         Container(
                           padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(color: backgroundColor.withOpacity(0.5),
-                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                          decoration: BoxDecoration(
+                              color: backgroundColor.withOpacity(0.5),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
                           child: DisplayTextImageGIF(
-                          message: repliedText,
-                          type: repliedMessageType,
-                                                ),
-
-
+                            message: repliedText,
+                            type: repliedMessageType,
+                          ),
                         ),
-                        SizedBox(height: 8,)
-
+                        SizedBox(
+                          height: 8,
+                        )
                       ],
                       DisplayTextImageGIF(
                         message: message,
                         type: type,
                       ),
-
                     ],
                   ),
                 ),
@@ -98,10 +103,11 @@ class MyMessageCard extends StatelessWidget {
                       const SizedBox(
                         width: 5,
                       ),
-                      const Icon(
-                        Icons.done_all,
+                       Icon(
+                        isSeen?
+                        Icons.done_all:Icons.done,
                         size: 20,
-                        color: Colors.white60,
+                        color:isSeen?Colors.blue: Colors.white60,
                       ),
                     ],
                   ),

@@ -41,7 +41,7 @@ class ChatController {
               senderUser: value!,
               messageReply: messageReply,
             ));
-            ref.read(messageReplyProvider.notifier).update((state) => null);
+    ref.read(messageReplyProvider.notifier).update((state) => null);
   }
 
   void sendFileMessage(BuildContext context, File file, String recieverUserId,
@@ -77,8 +77,14 @@ class ChatController {
               senderUser: value!,
               messageReply: messageReply),
         );
-        // is messageReply send and you not want to manually close
-        ref.read(messageReplyProvider.notifier).update((state) => null);
+    // is messageReply send and you not want to manually close
+    ref.read(messageReplyProvider.notifier).update((state) => null);
+  }
+
+  void setChatMessageSeen(
+    BuildContext context, String recieverUserId, String messageId,
+  ) {
+    chatRepository.setChatRepositorySeen(context, recieverUserId, messageId,);
   }
 }
 
