@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:whatsapp_ui/common/enums/message_enum.dart';
+import 'package:whatsapp_ui/common/providers/message_reply_provider.dart';
 import 'package:whatsapp_ui/common/widgets/loader.dart';
 import 'package:whatsapp_ui/features/chat/controller/chat_controller.dart';
 import 'package:whatsapp_ui/info.dart';
@@ -27,6 +29,11 @@ class _ChatListState extends ConsumerState<ChatList> {
     super.dispose();
   }
 
+  void onMessageSwipe(String message,
+  bool isMe,MessageEnum messageEnum) {
+    ref.read(messageReplyProvider.notifier).update((state) => MessageReply(message: message,isMe:isMe,messageEnum: messageEnum));
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Message>>(
@@ -37,7 +44,8 @@ class _ChatListState extends ConsumerState<ChatList> {
             return Loader();
           }
           SchedulerBinding.instance.addPostFrameCallback((_) {
-            messageController.jumpTo(messageController.position.maxScrollExtent);
+            messageController
+                .jumpTo(messageController.position.maxScrollExtent);
           });
           return ListView.builder(
             controller: messageController,
@@ -51,12 +59,23 @@ class _ChatListState extends ConsumerState<ChatList> {
                   message: messageData.text,
                   date: timeSent,
                   type: messageData.type,
+                  repliedText: messageData.repliedMessage,
+                  username: messageData.repliedTo,
+                  repliedMessageType: messageData.repliedMessageType,
+                  onLeftSwipe: ()=>onMessageSwipe(messageData.text,true,messageData.type),
                 );
               }
               return SenderMessageCard(
                 message: messageData.text,
                 date: timeSent,
                 type: messageData.type,
+                username: messageData.repliedTo,
+                  repliedMessageType: messageData.repliedMessageType,
+                  onRightSwipe: ()=>onMessageSwipe(messageData.text,false,messageData.type,
+                  ),
+                  repliedText: messageData.repliedMessage,
+
+
               );
             },
           );
