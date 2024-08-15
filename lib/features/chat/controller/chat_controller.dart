@@ -7,6 +7,7 @@ import 'package:whatsapp_ui/common/providers/message_reply_provider.dart';
 import 'package:whatsapp_ui/features/auth/controller/auth_controller.dart';
 import 'package:whatsapp_ui/features/chat/repositories/chat_repository.dart';
 import 'package:whatsapp_ui/models/chat_contact.dart';
+import 'package:whatsapp_ui/models/group.dart';
 import 'package:whatsapp_ui/models/message.dart';
 
 final ChatControllerProvider = Provider((ref) {
@@ -23,13 +24,19 @@ class ChatController {
   Stream<List<ChatContact>> chatContacts() {
     return chatRepository.getChatContact();
   }
+  Stream<List<Group>> chatGroups() {
+    return chatRepository.getChatGroups();
+  }
 
   Stream<List<Message>> chatStream(String recieverUserId) {
     return chatRepository.getChatStream(recieverUserId);
   }
+  Stream<List<Message>> groupChatStream(String groupId) {
+    return chatRepository.getGroupChatStream(groupId);
+  }
 
   void sendTextMessage(
-      BuildContext context, String text, String recieverUserId) {
+      BuildContext context, String text, String recieverUserId,bool isGroupChat) {
     final messageReply = ref.read(messageReplyProvider);
     // not the best way userDataAuthProvider it call Firebase when the data is there it is not good practice
     ref
@@ -40,12 +47,13 @@ class ChatController {
               recieverUserId: recieverUserId,
               senderUser: value!,
               messageReply: messageReply,
+              isGroupChat: isGroupChat
             ));
     ref.read(messageReplyProvider.notifier).update((state) => null);
   }
 
   void sendFileMessage(BuildContext context, File file, String recieverUserId,
-      MessageEnum messageEnum) {
+      MessageEnum messageEnum,bool isGroupChat) {
     final messageReply = ref.read(messageReplyProvider);
     ref.read(userDataAuthProvider).whenData((value) =>
         chatRepository.sendFileMesssage(
@@ -55,12 +63,13 @@ class ChatController {
             senderUserData: value!,
             messageEnum: messageEnum,
             ref: ref,
+            isGroupChat: isGroupChat,
             messageReply: messageReply));
     ref.read(messageReplyProvider.notifier).update((state) => null);
   }
 
   void sendGIFMessage(
-      BuildContext context, String gifUrl, String recieverUserId) {
+      BuildContext context, String gifUrl, String recieverUserId,bool isGroupChat) {
     final messageReply = ref.read(messageReplyProvider);
     //this wont work
     //https://giphy.com/gifs/storyful-kamala-harris-via-storyful-you-see-what-i-did-there-NyrK2t2T1Ff4r14BC6.gif
@@ -75,6 +84,7 @@ class ChatController {
               gifUrl: newgifUrl,
               recieverUserId: recieverUserId,
               senderUser: value!,
+              isGroupChat: isGroupChat,
               messageReply: messageReply),
         );
     // is messageReply send and you not want to manually close

@@ -7,7 +7,9 @@ import 'package:whatsapp_ui/features/chat/controller/chat_controller.dart';
 import 'package:whatsapp_ui/info.dart';
 import 'package:whatsapp_ui/features/chat/screens/mobile_chat_screen.dart';
 import 'package:whatsapp_ui/models/chat_contact.dart';
+import 'package:whatsapp_ui/models/group.dart';
 
+// whenver there is null check error try to remove doc
 class ContactsList extends ConsumerWidget {
   const ContactsList({Key? key}) : super(key: key);
 
@@ -16,65 +18,133 @@ class ContactsList extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
       // to get data in real time convert ListView.builder to StreamBuilder
-      child: StreamBuilder<List<ChatContact>>(
-          stream: ref.watch(ChatControllerProvider).chatContacts(),
-          builder: (context, snapshot) {
-            // if not doing below it give console errors
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Loader();
-            }
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                var chatContactData = snapshot.data![index];
-                return Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, MobileChatScreen.routeName,arguments: {
-                          'name':chatContactData.name,
-                          'uid':chatContactData.contactId,
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: ListTile(
-                          title: Text(
-                            chatContactData.name,
-                            style: const TextStyle(
-                              fontSize: 18,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+             StreamBuilder<List<Group>>(
+                stream: ref.watch(ChatControllerProvider).chatGroups(),
+                builder: (context, snapshot) {
+                  // if not doing below it give console errors
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Loader();
+                  }
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      var groupData = snapshot.data![index];
+                      return Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, MobileChatScreen.routeName,arguments: {
+                                'name':groupData.name,
+                                'uid':groupData.groupId,
+                                'isGroupChat':true
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: ListTile(
+                                title: Text(
+                                  groupData.name,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                subtitle: Padding(
+                                  padding: const EdgeInsets.only(top: 6.0),
+                                  child: Text(
+                                    groupData.lastMessage,
+                                    style: const TextStyle(fontSize: 15),
+                                  ),
+                                ),
+                                leading: CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                    groupData.groupPic,
+                                  ),
+                                  radius: 30,
+                                ),
+                                trailing: Text(
+                                  DateFormat.Hm().format(groupData.timeSent),
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                          subtitle: Padding(
-                            padding: const EdgeInsets.only(top: 6.0),
-                            child: Text(
-                              chatContactData.lastMessage,
-                              style: const TextStyle(fontSize: 15),
+                          const Divider(color: dividerColor, indent: 85),
+                        ],
+                      );
+                    },
+                  );
+                }),
+            StreamBuilder<List<ChatContact>>(
+                stream: ref.watch(ChatControllerProvider).chatContacts(),
+                builder: (context, snapshot) {
+                  // if not doing below it give console errors
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Loader();
+                  }
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      var chatContactData = snapshot.data![index];
+                      return Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, MobileChatScreen.routeName,arguments: {
+                                'name':chatContactData.name,
+                                'uid':chatContactData.contactId,
+                                'isGroupChat':false
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: ListTile(
+                                title: Text(
+                                  chatContactData.name,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                subtitle: Padding(
+                                  padding: const EdgeInsets.only(top: 6.0),
+                                  child: Text(
+                                    chatContactData.lastMessage,
+                                    style: const TextStyle(fontSize: 15),
+                                  ),
+                                ),
+                                leading: CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                    chatContactData.profilePic,
+                                  ),
+                                  radius: 30,
+                                ),
+                                trailing: Text(
+                                  DateFormat.Hm().format(chatContactData.timeSent),
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                          leading: CircleAvatar(
-                            backgroundImage: NetworkImage(
-                              chatContactData.profilePic,
-                            ),
-                            radius: 30,
-                          ),
-                          trailing: Text(
-                            DateFormat.Hm().format(chatContactData.timeSent),
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Divider(color: dividerColor, indent: 85),
-                  ],
-                );
-              },
-            );
-          }),
+                          const Divider(color: dividerColor, indent: 85),
+                        ],
+                      );
+                    },
+                  );
+                }),
+
+          ],
+        ),
+      ),
     );
   }
 }

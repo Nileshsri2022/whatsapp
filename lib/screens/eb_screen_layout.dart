@@ -7,6 +7,7 @@ import 'package:whatsapp_ui/widgets/web_profile_bar.dart';
 import 'package:whatsapp_ui/widgets/web_search_bar.dart';
 
 class WebLayoutScreen extends StatelessWidget {
+  // final bool isGroupChat;
   const WebLayoutScreen({Key? key}) : super(key: key);
 
   @override
@@ -45,6 +46,7 @@ class WebLayoutScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 const Expanded(
                   child: ChatList(
+                    isGroupChat: true,
                     recieverUserId: '',
                   ),
                 ),

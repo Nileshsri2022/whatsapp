@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/colors.dart';
+import 'package:whatsapp_ui/common/utils/utils.dart';
 import 'package:whatsapp_ui/features/auth/controller/auth_controller.dart';
+import 'package:whatsapp_ui/features/group/screens/create_group_screen.dart';
 import 'package:whatsapp_ui/features/select_contacts/screens/select_contact_screen.dart';
 import 'package:whatsapp_ui/features/chat/widgets/contacts_list.dart';
+import 'package:whatsapp_ui/features/status/screens/confirm_status_screen.dart';
+import 'package:whatsapp_ui/features/status/screens/status_contacts_screen.dart';
 
 class MobileLayoutScreen extends ConsumerStatefulWidget {
   const MobileLayoutScreen({Key? key}) : super(key: key);
@@ -13,17 +19,22 @@ class MobileLayoutScreen extends ConsumerStatefulWidget {
 }
 
 class _MobileLayoutScreenState extends ConsumerState<MobileLayoutScreen>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, TickerProviderStateMixin {
+  late TabController tabBarController;
+
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     super.initState();
+    tabBarController = TabController(length: 3, vsync: this);
+    WidgetsBinding.instance.addObserver(this);
   }
+
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
   }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
@@ -62,12 +73,24 @@ class _MobileLayoutScreenState extends ConsumerState<MobileLayoutScreen>
               icon: const Icon(Icons.search, color: Colors.grey),
               onPressed: () {},
             ),
-            IconButton(
-              icon: const Icon(Icons.more_vert, color: Colors.grey),
-              onPressed: () {},
-            ),
+            PopupMenuButton(
+                icon: Icon(
+                  Icons.more_vert,
+                  color: Colors.grey,
+                ),
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                        child: Text('Create Group'),
+                        onTap: () {
+                          // when PopMenuItem is clicked it call Navigator.pop() automatically so wrap inside Future
+                          Future(() => Navigator.pushNamed(
+                              context, CreateGroupScreen.routeName));
+                        },
+                      ),
+                    ])
           ],
-          bottom: const TabBar(
+          bottom: TabBar(
+            controller: tabBarController,
             indicatorColor: tabColor,
             indicatorWeight: 4,
             labelColor: tabColor,
@@ -88,10 +111,20 @@ class _MobileLayoutScreenState extends ConsumerState<MobileLayoutScreen>
             ],
           ),
         ),
-        body: const ContactsList(),
+        body: TabBarView(
+            controller: tabBarController,
+            children: [ContactsList(), StatusContactsScreen(), Text('Calls')]),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, SelectContactsScreen.routeName);
+          onPressed: () async {
+            if (tabBarController.index == 0) {
+              Navigator.pushNamed(context, SelectContactsScreen.routeName);
+            } else if (tabBarController.index == 1) {
+              File? pickedImage = await pickImageFromGallary(context);
+              if (pickedImage != null) {
+                Navigator.pushNamed(context, ConfirmStatusScreen.routeName,
+                    arguments: pickedImage);
+              }
+            }
           },
           backgroundColor: tabColor,
           child: const Icon(

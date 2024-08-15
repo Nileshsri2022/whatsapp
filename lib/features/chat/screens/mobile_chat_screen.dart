@@ -11,8 +11,9 @@ import 'package:whatsapp_ui/features/chat/widgets/chat_list.dart';
 class MobileChatScreen extends ConsumerWidget {
   final String name;
   final String uid;
+  final bool isGroupChat;
   static const String routeName = 'mobile-chat-screen';
-  const MobileChatScreen({Key? key, required this.name, required this.uid})
+  const MobileChatScreen({required this.isGroupChat, Key? key, required this.name, required this.uid})
       : super(key: key);
 
   @override
@@ -20,7 +21,7 @@ class MobileChatScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: appBarColor,
-        title: StreamBuilder<UserModel>(
+        title:isGroupChat?Text(name): StreamBuilder<UserModel>(
             stream: ref.read(authControllerProvider).userDataById(uid),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -34,9 +35,11 @@ class MobileChatScreen extends ConsumerWidget {
               return Column(
                 children: [
                   Text(name),
-                  Text(snapshot.data!.isOnline ? 'Online' : 'Offline',
-                  style: TextStyle(fontSize: 13,
-                  fontWeight: FontWeight.normal),),
+                  Text(
+                    snapshot.data!.isOnline ? 'Online' : 'Offline',
+                    style:
+                        TextStyle(fontSize: 13, fontWeight: FontWeight.normal),
+                  ),
                 ],
               );
             }),
@@ -58,15 +61,18 @@ class MobileChatScreen extends ConsumerWidget {
       ),
       body: Column(
         children: [
-           Expanded(
-            child: ChatList(recieverUserId:uid ,),
+          Expanded(
+            child: ChatList(
+              recieverUserId: uid,
+              isGroupChat: isGroupChat,
+            ),
           ),
           BottomChatField(
             recieverUserId: uid,
+            isGroupChat: isGroupChat,
           ),
         ],
       ),
     );
   }
 }
-

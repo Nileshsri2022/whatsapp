@@ -1,3 +1,4 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,9 +19,19 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    await FirebaseAppCheck.instance.activate(
+    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+    androidProvider: AndroidProvider.debug,
+
+  );
   } catch (err) {
     print("error in initializing");
   }
+  //  await FirebaseAppCheck.instance.activate(
+  //   // webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+  //   androidProvider: AndroidProvider.debug,
+  //   // appleProvider: AppleProvider.appAttest,
+  // );
   // to keep track and save all provider state
   runApp(ProviderScope(child: MyApp()));
 }

@@ -15,7 +15,8 @@ import 'sender_message_card.dart';
 
 class ChatList extends ConsumerStatefulWidget {
   final String recieverUserId;
-  const ChatList({required this.recieverUserId, Key? key}) : super(key: key);
+  final bool isGroupChat;
+  const ChatList({required this.isGroupChat, required this.recieverUserId, Key? key}) : super(key: key);
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ChatListState();
@@ -38,7 +39,8 @@ class _ChatListState extends ConsumerState<ChatList> {
   Widget build(BuildContext context) {
     return StreamBuilder<List<Message>>(
         stream:
-            ref.read(ChatControllerProvider).chatStream(widget.recieverUserId),
+        widget.isGroupChat?
+            ref.read(ChatControllerProvider).groupChatStream(widget.recieverUserId):ref.read(ChatControllerProvider).chatStream(widget.recieverUserId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Loader();
@@ -63,16 +65,15 @@ class _ChatListState extends ConsumerState<ChatList> {
               if (messageData.senderId ==
                   FirebaseAuth.instance.currentUser!.uid) {
                 return MyMessageCard(
-                  message: messageData.text,
-                  date: timeSent,
-                  type: messageData.type,
-                  repliedText: messageData.repliedMessage,
-                  username: messageData.repliedTo,
-                  repliedMessageType: messageData.repliedMessageType,
-                  onLeftSwipe: () =>
-                      onMessageSwipe(messageData.text, true, messageData.type),
-                      isSeen:messageData.isSeen
-                );
+                    message: messageData.text,
+                    date: timeSent,
+                    type: messageData.type,
+                    repliedText: messageData.repliedMessage,
+                    username: messageData.repliedTo,
+                    repliedMessageType: messageData.repliedMessageType,
+                    onLeftSwipe: () => onMessageSwipe(
+                        messageData.text, true, messageData.type),
+                    isSeen: messageData.isSeen);
               }
               return SenderMessageCard(
                 message: messageData.text,

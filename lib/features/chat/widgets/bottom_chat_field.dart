@@ -15,8 +15,10 @@ import 'package:whatsapp_ui/features/chat/widgets/message_reply_preview.dart';
 
 class BottomChatField extends ConsumerStatefulWidget {
   final String recieverUserId;
+  final bool isGroupChat;
   const BottomChatField({
     required this.recieverUserId,
+    required this.isGroupChat,
     super.key,
   });
 
@@ -53,7 +55,8 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   void sendTextMessage() async {
     if (isShowSendButton) {
       ref.read(ChatControllerProvider).sendTextMessage(
-          context, _messageController.text.trim(), widget.recieverUserId);
+          context, _messageController.text.trim(), widget.recieverUserId
+          ,widget.isGroupChat);
       setState(() {
         _messageController.text = '';
       });
@@ -78,7 +81,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   void sendFileMessage(File file, MessageEnum messageEnum) async {
     ref
         .read(ChatControllerProvider)
-        .sendFileMessage(context, file, widget.recieverUserId, messageEnum);
+        .sendFileMessage(context, file, widget.recieverUserId, messageEnum,widget.isGroupChat);
   }
 
   void selectImage() async {
@@ -105,7 +108,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
       print(gif.url);
       ref
           .read(ChatControllerProvider)
-          .sendGIFMessage(context, gif.url, widget.recieverUserId);
+          .sendGIFMessage(context, gif.url, widget.recieverUserId,widget.isGroupChat);
     } else {
       return;
     }
@@ -147,9 +150,9 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   Widget build(BuildContext context) {
     final messageReply = ref.watch(messageReplyProvider);
     final isShowMessageReply = messageReply != null;
-    return  Column(
+    return Column(
       children: [
-        isShowMessageReply?MessageReplyPreview():SizedBox(),
+        isShowMessageReply ? MessageReplyPreview() : SizedBox(),
         Row(
           children: [
             // to get max available space
@@ -171,49 +174,49 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: mobileChatBoxColor,
-                  prefixIcon: SizedBox(
-                    width: 100,
-                    child: Row(
-                      children: [
-                        IconButton(
-                            onPressed: toggleEmojiKeyboardContainer,
-                            icon: Icon(
-                              Icons.emoji_emotions,
-                              color: Colors.grey,
-                            )),
-                        IconButton(
-                          onPressed: selectGIF,
-                          icon: Icon(
-                            Icons.gif,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  suffixIcon: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: SizedBox(
                       width: 100,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
-                            onPressed: selectImage,
+                              onPressed: toggleEmojiKeyboardContainer,
+                              icon: Icon(
+                                Icons.emoji_emotions,
+                                color: Colors.grey,
+                              )),
+                          IconButton(
+                            onPressed: selectGIF,
                             icon: Icon(
-                              Icons.camera_alt,
+                              Icons.gif,
                               color: Colors.grey,
                             ),
                           ),
-                          IconButton(
-                            onPressed: selectVideo,
-                            icon: Icon(
-                              Icons.attach_file,
-                              color: Colors.grey,
-                            ),
-                          )
                         ],
                       ),
+                    ),
+                  ),
+                  suffixIcon: SizedBox(
+                    width: 100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          onPressed: selectImage,
+                          icon: Icon(
+                            Icons.camera_alt,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: selectVideo,
+                          icon: Icon(
+                            Icons.attach_file,
+                            color: Colors.grey,
+                          ),
+                        )
+                      ],
                     ),
                   ),
                   hintText: 'Type a message!',
@@ -267,9 +270,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
                   }),
                 ),
               )
-            : SizedBox(
-                height: 310,
-              )
+            : SizedBox()
       ],
     );
   }
