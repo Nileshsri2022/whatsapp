@@ -1,5 +1,3 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -46,9 +44,22 @@ class CallController {
           receiverPic: recieverProfilePic,
           callId: callId,
           hasDialled: false);
+      if (isGroupChat) {
+      callRepository.makeGroupCall(context, senderCallData, recieverCallData);
+    }
+    else{
       callRepository.makeCall(context, senderCallData, recieverCallData);
+    }
     });
+
   }
 
   Stream<DocumentSnapshot> get callStream => callRepository.callStream;
+  void endCall(
+    String callerId,
+    String recieverId,
+    BuildContext context,
+  ) {
+    callRepository.endCall( callerId, recieverId,context);
+  }
 }
