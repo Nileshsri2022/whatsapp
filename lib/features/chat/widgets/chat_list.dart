@@ -7,7 +7,7 @@ import 'package:whatsapp_ui/common/enums/message_enum.dart';
 import 'package:whatsapp_ui/common/providers/message_reply_provider.dart';
 import 'package:whatsapp_ui/common/widgets/loader.dart';
 import 'package:whatsapp_ui/features/chat/controller/chat_controller.dart';
-import 'package:whatsapp_ui/info.dart';
+
 import 'package:whatsapp_ui/models/message.dart';
 
 import 'my_message_card.dart';

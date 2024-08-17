@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/common/widgets/error.dart';
 import 'package:whatsapp_ui/common/widgets/loader.dart';
 import 'package:whatsapp_ui/features/select_contacts/controller/select_contact_controller.dart';
-import 'package:whatsapp_ui/features/select_contacts/repository/select_contact_repository.dart';
+
 
 class SelectContactsScreen extends ConsumerWidget {
   // register the screen now go to route.dart file

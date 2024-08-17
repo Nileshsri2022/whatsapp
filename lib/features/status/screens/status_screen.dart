@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:story_view/controller/story_controller.dart';
+
 import 'package:story_view/story_view.dart';
-import 'package:story_view/widgets/story_view.dart';
+
 import 'package:whatsapp_ui/common/widgets/loader.dart';
 import 'package:whatsapp_ui/models/status_model.dart';
 

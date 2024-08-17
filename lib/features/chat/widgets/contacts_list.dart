@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:whatsapp_ui/colors.dart';
 import 'package:whatsapp_ui/common/widgets/loader.dart';
 import 'package:whatsapp_ui/features/chat/controller/chat_controller.dart';
-import 'package:whatsapp_ui/info.dart';
+
 import 'package:whatsapp_ui/features/chat/screens/mobile_chat_screen.dart';
 import 'package:whatsapp_ui/models/chat_contact.dart';
 import 'package:whatsapp_ui/models/group.dart';
@@ -40,7 +40,8 @@ class ContactsList extends ConsumerWidget {
                               Navigator.pushNamed(context, MobileChatScreen.routeName,arguments: {
                                 'name':groupData.name,
                                 'uid':groupData.groupId,
-                                'isGroupChat':true
+                                'isGroupChat':true,
+                                'profilePic':groupData.groupPic
                               });
                             },
                             child: Padding(
@@ -100,7 +101,8 @@ class ContactsList extends ConsumerWidget {
                               Navigator.pushNamed(context, MobileChatScreen.routeName,arguments: {
                                 'name':chatContactData.name,
                                 'uid':chatContactData.contactId,
-                                'isGroupChat':false
+                                'isGroupChat':false,
+                                'profilePic':chatContactData.profilePic
                               });
                             },
                             child: Padding(

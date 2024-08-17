@@ -9,9 +9,9 @@ import 'package:whatsapp_ui/features/auth/controller/auth_controller.dart';
 import 'package:whatsapp_ui/features/landing/screens/landing_screen.dart';
 import 'package:whatsapp_ui/firebase_options.dart';
 import 'package:whatsapp_ui/router.dart';
-import 'package:whatsapp_ui/screens/eb_screen_layout.dart';
+
 import 'package:whatsapp_ui/screens/mobile_layout_screen.dart';
-import 'package:whatsapp_ui/utils/responsive_layout.dart';
+
 
 void main() async {
   try {
