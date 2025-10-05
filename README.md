@@ -47,5 +47,5 @@ Then run the following commands to run your app:
     
 ## Feedback
 
-If you have any feedback, please reach out to me at namanrivaan@gmail.com
+If you have any feedback, please reach out to me at nilesh.srivastava.51273@gmail.com
 
