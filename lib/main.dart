@@ -12,26 +12,24 @@ import 'package:whatsapp_ui/router.dart';
 
 import 'package:whatsapp_ui/screens/mobile_layout_screen.dart';
 
-
 void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    await FirebaseAppCheck.instance.activate(
-    webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-    androidProvider: AndroidProvider.debug,
 
-  );
+    // Activate App Check on all platforms
+    // IMPORTANT: Register this reCAPTCHA key in Firebase Console → App Check → Web App
+    await FirebaseAppCheck.instance.activate(
+      webProvider:
+          ReCaptchaV3Provider('6LeXm1IsAAAAAFhi0nfmVgsu4wpjH0HZuvGc2mM3'),
+      androidProvider: AndroidProvider.debug,
+      appleProvider: AppleProvider.debug,
+    );
   } catch (err) {
-    print("error in initializing");
+    print("error in initializing: $err");
   }
-  //  await FirebaseAppCheck.instance.activate(
-  //   // webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-  //   androidProvider: AndroidProvider.debug,
-  //   // appleProvider: AppleProvider.appAttest,
-  // );
   // to keep track and save all provider state
   runApp(ProviderScope(child: MyApp()));
 }
@@ -61,7 +59,7 @@ class MyApp extends ConsumerWidget {
           error: (err, trace) {
             return ErrorScreen(error: err.toString());
           },
-          loading: ()=>const Loader()),
+          loading: () => const Loader()),
     );
   }
 }

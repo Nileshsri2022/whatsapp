@@ -81,7 +81,7 @@ class AuthRepository {
   void saveUserDataToFirebase(
       {required String name,
       required File? profilePic,
-      required ProviderRef ref,
+      required Ref ref,
       required BuildContext context}) async {
     print("enter saveUserDataToFirebase this fn");
     try {

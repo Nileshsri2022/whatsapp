@@ -15,7 +15,7 @@ final groupRepositoryProvider=Provider((ref)=>GroupRepository(firestore: Firebas
 class GroupRepository {
   final FirebaseFirestore firestore;
   final FirebaseAuth auth;
-  final ProviderRef ref;
+  final Ref ref;
 
   GroupRepository(
       {required this.firestore, required this.auth, required this.ref});

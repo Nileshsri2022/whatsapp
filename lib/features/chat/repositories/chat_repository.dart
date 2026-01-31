@@ -254,7 +254,7 @@ var recieverChatContact = ChatContact(
     required File file,
     required String recieverUserId,
     required UserModel senderUserData,
-    required ProviderRef ref,
+    required Ref ref,
     required MessageEnum messageEnum,
     required MessageReply? messageReply,
     required bool isGroupChat,

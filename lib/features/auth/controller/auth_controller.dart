@@ -17,7 +17,7 @@ final authControllerProvider = Provider((ref) {
 
 class AuthController {
   final AuthRepository authRepository;
-  final ProviderRef ref;
+  final Ref ref;
   AuthController({required this.ref, required this.authRepository});
 
   void signInWithPhone(BuildContext context, String phoneNumber) {

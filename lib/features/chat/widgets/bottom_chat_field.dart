@@ -55,8 +55,10 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   void sendTextMessage() async {
     if (isShowSendButton) {
       ref.read(ChatControllerProvider).sendTextMessage(
-          context, _messageController.text.trim(), widget.recieverUserId
-          ,widget.isGroupChat);
+          context,
+          _messageController.text.trim(),
+          widget.recieverUserId,
+          widget.isGroupChat);
       setState(() {
         _messageController.text = '';
       });
@@ -79,9 +81,8 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   }
 
   void sendFileMessage(File file, MessageEnum messageEnum) async {
-    ref
-        .read(ChatControllerProvider)
-        .sendFileMessage(context, file, widget.recieverUserId, messageEnum,widget.isGroupChat);
+    ref.read(ChatControllerProvider).sendFileMessage(
+        context, file, widget.recieverUserId, messageEnum, widget.isGroupChat);
   }
 
   void selectImage() async {
@@ -104,11 +105,10 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
     print('gif');
     print(gif);
 
-    if (gif != null) {
-      print(gif.url);
-      ref
-          .read(ChatControllerProvider)
-          .sendGIFMessage(context, gif.url, widget.recieverUserId,widget.isGroupChat);
+    if (gif != null && gif.images?.original?.url != null) {
+      print(gif.images!.original!.url);
+      ref.read(ChatControllerProvider).sendGIFMessage(context,
+          gif.images!.original!.url, widget.recieverUserId, widget.isGroupChat);
     } else {
       return;
     }

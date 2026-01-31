@@ -20,7 +20,7 @@ final statusRepositoryProvider = Provider((ref) => StatusRepository(
 class StatusRepository {
   final FirebaseFirestore firestore;
   final FirebaseAuth auth;
-  final ProviderRef ref;
+  final Ref ref;
 
   StatusRepository(
       {required this.firestore, required this.auth, required this.ref});

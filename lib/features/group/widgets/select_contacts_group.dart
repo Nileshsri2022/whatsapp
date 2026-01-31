@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:whatsapp_ui/common/widgets/error.dart';
 import 'package:whatsapp_ui/common/widgets/loader.dart';
 import 'package:whatsapp_ui/features/select_contacts/controller/select_contact_controller.dart';
 
-final selectedGroupContacts = StateProvider<List<Contact>>((ref)=>[]);
+final selectedGroupContacts = StateProvider<List<Contact>>((ref) => []);
 
 class SelectContactsGroup extends ConsumerStatefulWidget {
   const SelectContactsGroup({super.key});
@@ -24,7 +25,9 @@ class _SelectContactsGroupState extends ConsumerState<SelectContactsGroup> {
       selectedContactsIndex.add(index);
     }
     setState(() {});
-    ref.read(selectedGroupContacts.notifier).update((state)=>[...state,contact]);
+    ref
+        .read(selectedGroupContacts.notifier)
+        .update((state) => [...state, contact]);
   }
 
   @override

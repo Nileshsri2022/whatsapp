@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:whatsapp_ui/common/enums/message_enum.dart';
 
 class MessageReply {
@@ -11,4 +11,4 @@ class MessageReply {
 }
 
 // hence the message is vary so use StateProvider
-final messageReplyProvider = StateProvider<MessageReply?>((ref)=>null);
+final messageReplyProvider = StateProvider<MessageReply?>((ref) => null);

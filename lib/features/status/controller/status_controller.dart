@@ -14,7 +14,7 @@ final statusControllerProvider = Provider((ref) {
 
 class StatusController {
   final StatusRepository statusRepository;
-  final ProviderRef ref;
+  final Ref ref;
 
   StatusController({required this.statusRepository, required this.ref});
   void addStatus(File file, BuildContext context) {
